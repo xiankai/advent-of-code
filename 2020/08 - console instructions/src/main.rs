@@ -4,7 +4,7 @@ use std::io::{BufReader, BufRead, Error};
 struct Instruction {
     operation: String,
     value: i32,
-    times_ran: i32,
+    tried_changing: bool,
 }
 
 fn read_input(path: &str) -> Result<Vec<Instruction>, Error> {
@@ -16,7 +16,7 @@ fn read_input(path: &str) -> Result<Vec<Instruction>, Error> {
         instructions.push(Instruction {
             operation: y[..3].to_string(),
             value: y[4..].parse::<i32>().unwrap(),
-            times_ran: 0,
+            tried_changing: false,
         })
     }
     Ok(instructions)
@@ -27,18 +27,36 @@ fn main() {
 
     let mut accumulator = 0;
     let mut index = 0;
+    let mut has_tried_changing = false;
+    let mut instructions_executed = vec![];
+
     let mut terminated = false;
     while !terminated {
         let current_instruction = &instructions[index];
 
-        if current_instruction.times_ran > 0 {
-            terminated = true;
+        if instructions_executed.contains(&index) {
+            instructions_executed = vec![];
+            accumulator = 0;
+            index = 0;
+            has_tried_changing = false;
+            // terminated = true;
             continue;
         }
 
         let prev_index = index;
         let value = current_instruction.value;
-        let operation = &current_instruction.operation[..];
+        let mut operation = &current_instruction.operation[..];
+        let mut tried_changing = false;
+
+        // println!("did we try yet? {}, has {} been tried yet? {}", has_tried_changing, prev_index, current_instruction.tried_changing);
+        if !has_tried_changing && !current_instruction.tried_changing {
+            match operation {
+                "jmp" => operation = "nop",
+                "nop" => operation = "jmp",
+                _ => {},
+            }
+            tried_changing = true;
+        }
 
         match operation {
             "acc" => {
@@ -51,7 +69,13 @@ fn main() {
             "nop" => index += 1,
             _ => panic!("unfound instruction {}", current_instruction.operation),
         }
-        instructions[prev_index].times_ran += 1;
+
+        instructions_executed.push(prev_index);
+        if tried_changing {
+            // println!("tried {}", prev_index);
+            instructions[prev_index].tried_changing = true;
+            has_tried_changing = true;
+        }
 
         if index == instructions.len() {
             terminated = true;
