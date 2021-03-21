@@ -13,26 +13,32 @@ fn read_input(path: &str) -> Vec<String> {
 fn main() {
     let schedule = read_input("./input.txt");
 
-    let mut earliest_timestamp: i64 = 0;
-    let mut buses: Vec<(i64, i64)> = vec!();
-    let mut biggest_bus = 0;
+    let mut buses: Vec<[i64; 2]> = vec!();
     for (i, bus) in schedule.iter().enumerate() {
         if bus == "x" { continue; }
         let bus_id = bus.parse::<i64>().unwrap();
-        buses.push((i as i64, bus_id));
-        if bus_id > biggest_bus {
-            biggest_bus = bus_id;
-            earliest_timestamp = -(i as i64);
-        }
+        buses.push([i as i64, bus_id]);
     };
 
     println!("{:?}", buses);
-    earliest_timestamp += 100000000000000 + (100000000000000 % biggest_bus);
+    // solution from https://old.reddit.com/r/adventofcode/comments/kcb3bb/2020_day_13_part_2_can_anyone_tell_my_why_this/
+    let mut earliest_timestamp: i64 = 0;
 
-    while buses.iter().any(|(i, bus_id)| (earliest_timestamp + i) % bus_id != 0) {
-        earliest_timestamp += biggest_bus;
+    let mut lcm = buses[0][1];
+    let mut bus_being_checked = buses[1][1];
+    let mut offset = buses[1][0];
+    let mut buses_to_check = 2;
+
+    loop {
+        if (earliest_timestamp + offset) % bus_being_checked == 0 {
+            lcm *= bus_being_checked;
+            buses_to_check += 1;
+            if buses_to_check > buses.len() { break; }
+            bus_being_checked = buses[buses_to_check - 1][1];
+            offset = buses[buses_to_check - 1][0];
+        }
+        earliest_timestamp += lcm;
         // println!("{}", earliest_timestamp);
-        // break;
     }
 
     println!("{}", earliest_timestamp);
