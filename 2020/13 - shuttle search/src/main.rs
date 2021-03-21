@@ -1,26 +1,39 @@
 use std::fs::File;
 use std::io::{BufReader, BufRead};
 
-fn read_input(path: &str) -> (i32, Vec<i32>) {
+fn read_input(path: &str) -> Vec<String> {
     let file = File::open(path).unwrap();
     let br = BufReader::new(file);
     let mut iter = br.lines();
-    let earliest_timestamp = iter.next().unwrap().unwrap().parse::<i32>().unwrap();
-    let schedule: Vec<i32> = iter.next().unwrap().unwrap().split(',').filter(|x| x != &"x").map(|x| x.parse::<i32>().unwrap()).collect();
-    (earliest_timestamp, schedule)
+    let _earliest_timestamp = iter.next().unwrap().unwrap().parse::<i64>().unwrap();
+    let schedule = iter.next().unwrap().unwrap().split(',').map(|x| x.to_string()).collect();
+    schedule
 }
 
 fn main() {
-    let (earliest_timestamp, schedule) = read_input("./input.txt");
+    let schedule = read_input("./input.txt");
 
-    let mut earliest_bus = 0;
-    let mut earliest_time_waited = earliest_timestamp;
-    for bus in schedule.iter() {
-        let time_waited = bus - earliest_timestamp % bus;
-        if time_waited < earliest_time_waited {
-            earliest_time_waited = time_waited;
-            earliest_bus = *bus;
+    let mut earliest_timestamp: i64 = 0;
+    let mut buses: Vec<(i64, i64)> = vec!();
+    let mut biggest_bus = 0;
+    for (i, bus) in schedule.iter().enumerate() {
+        if bus == "x" { continue; }
+        let bus_id = bus.parse::<i64>().unwrap();
+        buses.push((i as i64, bus_id));
+        if bus_id > biggest_bus {
+            biggest_bus = bus_id;
+            earliest_timestamp = -(i as i64);
         }
+    };
+
+    println!("{:?}", buses);
+    earliest_timestamp += 100000000000000 + (100000000000000 % biggest_bus);
+
+    while buses.iter().any(|(i, bus_id)| (earliest_timestamp + i) % bus_id != 0) {
+        earliest_timestamp += biggest_bus;
+        // println!("{}", earliest_timestamp);
+        // break;
     }
-    println!("{} * {} = {}", earliest_bus, earliest_time_waited, earliest_bus * earliest_time_waited);
+
+    println!("{}", earliest_timestamp);
 }
