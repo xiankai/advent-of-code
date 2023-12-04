@@ -5,4 +5,5 @@ members = [
   "2023/day-01-trebuchet",
   "2023/day-02-cube-conundrum",
   "2023/day-03-gear-ratios",
+  "2023/day-04-scratchcards",
 ]

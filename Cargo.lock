@@ -64,6 +64,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day-04-scratchcards"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "hashbrown",
+ "regex",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.14.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
