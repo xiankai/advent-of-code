@@ -73,6 +73,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "day-05-if-you-give-a-seed-a-fertilizer"
+version = "0.1.0"
+dependencies = [
+ "common",
+ "regex",
+ "thousands",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.14.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -151,6 +160,12 @@ dependencies = [
  "quote",
  "unicode-ident",
 ]
+
+[[package]]
+name = "thousands"
+version = "0.2.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3bf63baf9f5039dadc247375c29eb13706706cfde997d0330d05aa63a77d8820"
 
 [[package]]
 name = "unicode-ident"
