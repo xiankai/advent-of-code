@@ -131,6 +131,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "day-11-cosmic-expansion"
+version = "0.1.0"
+dependencies = [
+ "common",
+]
+
+[[package]]
+name = "day-12-hot-springs"
+version = "0.1.0"
+dependencies = [
+ "common",
+]
+
+[[package]]
 name = "hashbrown"
 version = "0.14.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
